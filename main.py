@@ -2,7 +2,7 @@ import os
 import cv2
 import time
 from datetime import datetime
-from faceid import Face, load_image, create_database, detect_faces, save_database, load_database, consistent_faces
+from faceid import load_image, create_database, detect_faces, save_database, load_database, consistent_faces
 from gsheets import setup_gspread, check_and_update_sheet, mark_attendance
 from datepopulator import populate_dates
 

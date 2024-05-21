@@ -19,6 +19,38 @@ def load_image(path):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     return image
 
+def save_database(faces):
+    with open(DATABASE_FILENAME, 'wb') as f:
+        pickle.dump(faces, f)
+
+def load_database():
+    try:
+        with open(DATABASE_FILENAME, 'rb') as f:
+            faces = pickle.load(f)
+        return faces
+    except FileNotFoundError:
+        return []
+    
+def draw_bounding_box(image_test, loc_test):
+    top, right, bottom, left = loc_test
+    line_color = (0, 255, 0)
+    line_thickness = 2
+    cv2.rectangle(image_test, (left, top), (right, bottom), line_color, line_thickness)
+    return image_test
+
+def draw_name(image_test, loc_test, pred_name):
+    top, right, bottom, left = loc_test
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    font_scale = 1.5
+    font_color = (0, 0, 255)
+    line_thickness = 3
+    text_size, _ = cv2.getTextSize(pred_name, font, font_scale, line_thickness)
+    bg_top_left = (left, top - text_size[1])
+    bg_bottom_right = (left + text_size[0], top)
+    cv2.rectangle(image_test, bg_top_left, bg_bottom_right, (0, 255, 0), -1)   
+    cv2.putText(image_test, pred_name, (left, top), font, font_scale, font_color, line_thickness)
+    return image_test
+
 def create_database(filenames, images):
     faces = []
     for filename, image in tqdm(zip(filenames, images), total=len(filenames)):
@@ -67,44 +99,11 @@ def detect_faces(image_test, faces, detected_faces, threshold=0.6, unknown_thres
                 detected_faces[pred_name] = 0
             detected_faces[pred_name] += 1
 
-        image_test = draw_bounding_box(image_test, loc_test)
-        image_test = draw_name(image_test, loc_test, pred_name)
+        image_test = Face.draw_bounding_box(image_test, loc_test)
+        image_test = Face.draw_name(image_test, loc_test, pred_name)
 
     for name, count in detected_faces.items():
         if count >= min_frames:
             consistent_faces[name] = count
 
     return image_test
-
-def draw_bounding_box(image_test, loc_test):
-    top, right, bottom, left = loc_test
-    line_color = (0, 255, 0)
-    line_thickness = 2
-    cv2.rectangle(image_test, (left, top), (right, bottom), line_color, line_thickness)
-    return image_test
-
-def draw_name(image_test, loc_test, pred_name):
-    top, right, bottom, left = loc_test
-    font = cv2.FONT_HERSHEY_SIMPLEX
-    font_scale = 1.5
-    font_color = (0, 0, 255)
-    line_thickness = 3
-    text_size, _ = cv2.getTextSize(pred_name, font, font_scale, line_thickness)
-    bg_top_left = (left, top - text_size[1])
-    bg_bottom_right = (left + text_size[0], top)
-    cv2.rectangle(image_test, bg_top_left, bg_bottom_right, (0, 255, 0), -1)   
-    cv2.putText(image_test, pred_name, (left, top), font, font_scale, font_color, line_thickness)
-    return image_test
-
-def save_database(faces):
-    with open(DATABASE_FILENAME, 'wb') as f:
-        pickle.dump(faces, f)
-
-@staticmethod
-def load_database():
-    try:
-        with open(DATABASE_FILENAME, 'rb') as f:
-            faces = pickle.load(f)
-        return faces
-    except FileNotFoundError:
-        return []
