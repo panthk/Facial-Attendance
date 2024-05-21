@@ -27,7 +27,7 @@
     },
     {
       "name": "flutter",
-      "rootUri": "file:///Users/panth/Downloads/flutter/packages/flutter",
+      "rootUri": "file:///Users/panth/flutter/packages/flutter",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -81,7 +81,7 @@
     },
     {
       "name": "sky_engine",
-      "rootUri": "file:///Users/panth/Downloads/flutter/bin/cache/pkg/sky_engine",
+      "rootUri": "file:///Users/panth/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -128,7 +128,7 @@
       "languageVersion": "3.3"
     }
   ],
-  "generated": "2024-04-25T01:25:10.685837Z",
+  "generated": "2024-04-25T22:04:37.936459Z",
   "generator": "pub",
   "generatorVersion": "3.3.4"
 }
