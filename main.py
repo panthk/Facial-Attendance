@@ -21,7 +21,7 @@ def main():
     detected_faces = {}
 
     client = setup_gspread()
-    sheet_name = "TKS Attendance Tracker"
+    sheet_name = "Attendance Tracker"
     worksheet_index = 0
     sheet = client.open(sheet_name).get_worksheet(worksheet_index)
     folder_path = "known_faces"

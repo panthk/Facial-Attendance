@@ -38,17 +38,17 @@ def draw_bounding_box(image_test, loc_test):
     cv2.rectangle(image_test, (left, top), (right, bottom), line_color, line_thickness)
     return image_test
 
-def draw_name(image_test, loc_test, pred_name):
+def draw_name(image_test, loc_test, pred_name, conf):
     top, right, bottom, left = loc_test
     font = cv2.FONT_HERSHEY_SIMPLEX
-    font_scale = 1.5
+    font_scale = 0.75
     font_color = (0, 0, 255)
-    line_thickness = 3
-    text_size, _ = cv2.getTextSize(pred_name, font, font_scale, line_thickness)
+    line_thickness = 2
+    text_size, _ = cv2.getTextSize(str(pred_name) + " " + str(round(conf, 2)) + "%" , font, font_scale, line_thickness)
     bg_top_left = (left, top - text_size[1])
     bg_bottom_right = (left + text_size[0], top)
     cv2.rectangle(image_test, bg_top_left, bg_bottom_right, (0, 255, 0), -1)   
-    cv2.putText(image_test, pred_name, (left, top), font, font_scale, font_color, line_thickness)
+    cv2.putText(image_test, str(pred_name) + " " + str(round(conf, 2)) + "%", (left, top), font, font_scale, font_color, line_thickness)
     return image_test
 
 def create_database(filenames, images):
@@ -84,6 +84,7 @@ def detect_faces(image_test, faces, detected_faces, threshold=0.6, unknown_thres
         if match_percentage / 100 < threshold:
             print("Unknown Face Detected")
             pred_name = 'Unknown Face Detected'
+
         else:
             if match_percentage / 100 < unknown_threshold:
                 print("Unknown Face Detected")
@@ -99,8 +100,8 @@ def detect_faces(image_test, faces, detected_faces, threshold=0.6, unknown_thres
                 detected_faces[pred_name] = 0
             detected_faces[pred_name] += 1
 
-        image_test = Face.draw_bounding_box(image_test, loc_test)
-        image_test = Face.draw_name(image_test, loc_test, pred_name)
+        image_test = draw_bounding_box(image_test, loc_test)
+        image_test = draw_name(image_test, loc_test, pred_name, match_percentage)
 
     for name, count in detected_faces.items():
         if count >= min_frames:
